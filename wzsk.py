@@ -31,7 +31,7 @@ class WZSK:
     @staticmethod
     def is_valid_frame(frame):
         checksum = ord(frame[-1])
-        without_checksum = frame[:-2]
+        without_checksum = frame[:-1]
         WZSK.print_frame(without_checksum)
         without_checksum_sum = sum(ord(b) for b in without_checksum)
         print('without checksum sum: {} (0x{:02x})'.format(without_checksum_sum, without_checksum_sum))
