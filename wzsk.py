@@ -30,7 +30,7 @@ class WZSK:
 
     @staticmethod
     def is_valid_frame(frame):
-        checksum = frame[-1]
+        checksum = ord(frame[-1])
         return checksum == sum(ord(b) for b in frame[:-1]) ^ 0xff | 0x01
 
     @staticmethod
