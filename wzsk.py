@@ -4,7 +4,7 @@ import serial
 
 SERIAL_DEVICE = '/dev/ttyAMA0'
 HEAD_FIRST = 0xff
-REMAINING_LENGTH = 8
+BODY_LENGTH = 8
 
 
 class WZSK:
@@ -22,12 +22,18 @@ class WZSK:
         while True:
             b = self.serial.read()
             if b != chr(HEAD_FIRST):
-                print('0x{:02x}'.format(b))
                 continue
-            body = self.serial.read(REMAINING_LENGTH)
-            if len(body) != REMAINING_LENGTH:
+            body = self.serial.read(BODY_LENGTH)
+            if len(body) != BODY_LENGTH:
                 continue
             return body
+
+    @staticmethod
+    def is_valid_frame(frame):
+        checksum = frame[-1]
+        expected_checksum = ~sum(ord(b) for b in frame[:-2]) + 1
+        print('expected: {}'.format(expected_checksum))
+        return checksum == expected_checksum
 
     @staticmethod
     def print_frame(frame):
@@ -36,4 +42,7 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
-    WZSK.print_frame(device.get_frame())
+    frame = device.get_frame()
+    WZSK.print_frame(frame)
+    if WZSK.is_valid_frame(frame):
+        print('Valid frame')
