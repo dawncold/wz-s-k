@@ -31,7 +31,6 @@ class WZSK:
 
     @staticmethod
     def print_frame(frame):
-        print(' '.join(b for b in frame))
         print(' '.join('0x{:02x}'.format(ord(b)) for b in frame))
 
 
