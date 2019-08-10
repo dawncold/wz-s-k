@@ -31,7 +31,7 @@ class WZSK:
     @staticmethod
     def is_valid_frame(frame):
         checksum = ord(frame[-1])
-        expected_checksum = sum(ord(b) for b in frame[:-1]) ^ 0xff | 0x01
+        expected_checksum = ~sum(ord(b) for b in frame[:-1]) & 0xff | 0x01
         print('expected: {}, actual: {}'.format(expected_checksum, checksum))
         return checksum == expected_checksum
 
