@@ -31,13 +31,15 @@ class WZSK:
     @staticmethod
     def is_valid_frame(frame):
         checksum = ord(frame[-1])
-        expected_checksum = (~sum(ord(b) for b in frame[:-1]) & 0xff) + 1
-        print('expected: {}, actual: {}'.format(expected_checksum, checksum))
-        return checksum == expected_checksum
+        return checksum == (~sum(ord(b) for b in frame[:-1]) & 0xff) + 1
 
     @staticmethod
     def print_frame(frame):
         print(' '.join('0x{:02x}'.format(ord(b)) for b in frame))
+
+    @staticmethod
+    def calculate(frame):
+        return ord(frame[3] << 8) + ord(frame[4])
 
 
 if __name__ == '__main__':
@@ -45,4 +47,4 @@ if __name__ == '__main__':
     frame = device.get_frame()
     WZSK.print_frame(frame)
     if WZSK.is_valid_frame(frame):
-        print('Valid frame')
+        print('CH2O: {}'.format(WZSK.calculate(frame)))
