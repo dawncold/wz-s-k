@@ -39,7 +39,7 @@ class WZSK:
 
     @staticmethod
     def calculate(frame):
-        return ord(frame[3]) << 8 + ord(frame[4])
+        return (ord(frame[3]) << 8) + ord(frame[4])
 
 
 if __name__ == '__main__':
