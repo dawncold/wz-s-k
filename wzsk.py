@@ -11,6 +11,7 @@ class WZSK:
     def __init__(self, serial_device=SERIAL_DEVICE):
         self.serial_device = serial_device
         self.serial = None
+        self.setup_serial()
 
     def setup_serial(self):
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600,
