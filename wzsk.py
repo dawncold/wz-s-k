@@ -21,23 +21,27 @@ class WZSK:
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.5,
                                     write_timeout=0.5)
 
+    def switch_to_positive_mode(self):
+        print('switch to positive mode')
+        self.serial.write(b'\xFF\x01\x78\x40\x00\x00\x00\x00\x47')
+        time.sleep(.5)
+        self.serial.reset_input_buffer()
+
     def switch_to_passive_mode(self):
         print('switch to passive mode')
         self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
-        time.sleep(.1)
+        time.sleep(.5)
         self.serial.reset_input_buffer()
 
     def request(self):
         self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
-        time.sleep(.1)
+        time.sleep(.5)
 
         b = self.serial.read()
         if b != chr(HEAD_FIRST):
-            print('invalid head first: {:02x}'.format(ord(b)))
             return None
         frame = self.serial.read(BODY_LENGTH)
         if len(frame) != BODY_LENGTH:
-            print('invalid frame length: {}'.format(len(frame)))
             return None
         return frame
 
@@ -67,6 +71,7 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
+    device.switch_to_positive_mode()
     device.switch_to_passive_mode()
     while True:
         frame = device.request()
