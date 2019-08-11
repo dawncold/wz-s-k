@@ -44,17 +44,8 @@ class WZSK:
         data.append(0x79)
         self.serial.write(bytes(data))
 
-        b = self.serial.read()
-        if b != chr(HEAD_FIRST):
-            return
-        if b != chr(COMMAND_PREFIX):
-            return
-        remaining_frame = self.serial.read(BODY_LENGTH - 1)
-        if len(remaining_frame) != BODY_LENGTH - 1:
-            return
-        frame = bytearray(COMMAND_PREFIX)
-        frame.extend(remaining_frame)
-        return bytes(frame)
+        frame = self.serial.read(9)
+        return frame
 
     def get_frame(self):
         while True:
@@ -93,7 +84,7 @@ if __name__ == '__main__':
     if response:
         WZSK.print_frame(response)
         if WZSK.is_valid_frame(response):
-            print('CH2O: {}'.format(WZSK.calculate(response[5], response[6])))
+            print('CH2O: {}'.format(WZSK.calculate(response[6], response[7])))
         else:
             print('invalid response')
     else:
