@@ -19,7 +19,8 @@ class WZSK:
 
     def setup_serial(self):
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.5,
-                                    write_timeout=0.5)
+                                    write_timeout=0.5, xonxoff=False, rtscts=False, dsrdtr=False,
+                                    inter_byte_timeout=None, exclusive=None)
 
     def switch_to_positive_mode(self):
         print('switch to positive mode')
