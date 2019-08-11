@@ -15,12 +15,12 @@ class WZSK:
         self.setup_serial()
 
     def setup_serial(self):
-        self.serial = serial.Serial(port=self.serial_device, baudrate=9600,
-                                    bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-                                    stopbits=serial.STOPBITS_ONE)
+        self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.2,
+                                    write_timeout=0.5)
 
     def switch_to_passive_mode(self):
         data = bytearray()
+        data.append(0xff)
         data.append(0x01)
         data.append(0x78)
         data.append(0x41)
@@ -30,9 +30,11 @@ class WZSK:
         data.append(0x00)
         data.append(0x46)
         self.serial.write(bytes(data))
+        self.serial.reset_input_buffer()
 
     def request(self):
         data = bytearray()
+        data.append(0xff)
         data.append(0x01)
         data.append(0x86)
         data.append(0x00)
@@ -43,18 +45,17 @@ class WZSK:
         data.append(0x79)
         self.serial.write(bytes(data))
 
-        while True:
-            b = self.serial.read()
-            if b != chr(HEAD_FIRST):
-                continue
-            if b != chr(COMMAND_PREFIX):
-                continue
-            remaining_frame = self.serial.read(BODY_LENGTH - 1)
-            if len(remaining_frame) != BODY_LENGTH - 1:
-                continue
-            frame = bytearray(COMMAND_PREFIX)
-            frame.extend(remaining_frame)
-            return bytes(frame)
+        b = self.serial.read()
+        if b != chr(HEAD_FIRST):
+            return
+        if b != chr(COMMAND_PREFIX):
+            return
+        remaining_frame = self.serial.read(BODY_LENGTH - 1)
+        if len(remaining_frame) != BODY_LENGTH - 1:
+            return
+        frame = bytearray(COMMAND_PREFIX)
+        frame.extend(remaining_frame)
+        return bytes(frame)
 
     def get_frame(self):
         while True:
