@@ -76,6 +76,7 @@ if __name__ == '__main__':
     device = WZSK()
     device.switch_to_passive_mode()
     while True:
-        frame = device.get_frame()
+        frame = device.request()
         WZSK.print_frame(frame)
+        print('CH2O: {}'.format(WZSK.calculate(frame[5], frame[6])))
         time.sleep(1)
