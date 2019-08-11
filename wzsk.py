@@ -1,5 +1,8 @@
 #! coding: utf-8
 from __future__ import unicode_literals, print_function, division
+
+import time
+
 import serial
 
 SERIAL_DEVICE = '/dev/ttyAMA0'
@@ -44,8 +47,14 @@ class WZSK:
         data.append(0x79)
         self.serial.write(bytes(data))
 
-        frame = self.serial.read(9)
-        return frame
+        if self.serial.in_waiting() == 9:
+            b = self.serial.read()
+            if b != chr(HEAD_FIRST):
+                return None
+            frame = self.serial.read(BODY_LENGTH)
+            return frame
+        self.serial.reset_input_buffer()
+        return None
 
     def get_frame(self):
         while True:
@@ -80,12 +89,14 @@ if __name__ == '__main__':
 
     print('switch to passive mode')
     device.switch_to_passive_mode()
-    response = device.request()
-    if response:
-        WZSK.print_frame(response)
-        if WZSK.is_valid_frame(response):
-            print('CH2O: {}'.format(WZSK.calculate(response[6], response[7])))
+    while True:
+        response = device.request()
+        if response:
+            WZSK.print_frame(response)
+            if WZSK.is_valid_frame(response):
+                print('CH2O: {}'.format(WZSK.calculate(response[6], response[7])))
+            else:
+                print('invalid response')
         else:
-            print('invalid response')
-    else:
-        print('no response')
+            print('no response')
+        time.sleep(1500)
