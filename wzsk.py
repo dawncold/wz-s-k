@@ -58,7 +58,7 @@ class WZSK:
     def get_value_high_and_low(self, frame):
         if self.positive:
             return frame[3], frame[4]
-        return frame[1], frame[2]
+        return frame[5], frame[6]
 
     @staticmethod
     def is_valid_frame(frame):
