@@ -99,4 +99,4 @@ if __name__ == '__main__':
                 print('invalid response')
         else:
             print('no response')
-        time.sleep(1500)
+        time.sleep(1.5)
