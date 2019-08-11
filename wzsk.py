@@ -21,17 +21,8 @@ class WZSK:
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600, write_timeout=0.5)
 
     def switch_to_passive_mode(self):
-        data = bytearray()
-        data.append(0xff)
-        data.append(0x01)
-        data.append(0x78)
-        data.append(0x41)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x46)
-        self.serial.write(bytes(data))
+        self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
+        time.sleep(1)
         self.serial.reset_input_buffer()
 
     def request(self):
@@ -92,4 +83,4 @@ if __name__ == '__main__':
     while True:
         frame = device.get_frame()
         WZSK.print_frame(frame)
-        time.sleep(1.5)
+        time.sleep(1)
