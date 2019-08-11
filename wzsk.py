@@ -42,10 +42,15 @@ class WZSK:
             time.sleep(.5)
 
         b = self.serial.read()
+        if b is None:
+            return None
         if b != chr(HEAD_FIRST):
+            print('invalid head: 0x{:02x}'.format(ord(b)))
             return None
         body = self.serial.read(BODY_LENGTH)
         if len(body) != BODY_LENGTH:
+            print('invalid body: ',)
+            WZSK.print_frame(body)
             return None
         return body
 
