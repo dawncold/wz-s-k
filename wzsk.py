@@ -1,25 +1,25 @@
 #! coding: utf-8
 from __future__ import unicode_literals, print_function, division
-
+import sys
 import time
 
 import serial
+import serial.tools.list_ports
 
-SERIAL_DEVICE = '/dev/ttyAMA0'
 HEAD_FIRST = 0xff
 COMMAND_PREFIX = 0x86
 BODY_LENGTH = 8
 
 
 class WZSK:
-    def __init__(self, serial_device=SERIAL_DEVICE):
-        self.serial_device = serial_device
+    def __init__(self):
         self.serial = None
         self.setup_serial()
         self.positive = True
 
     def setup_serial(self):
-        self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.5,
+        port = serial.tools.list_ports.comports()[0]
+        self.serial = serial.Serial(port=port.device, baudrate=9600, timeout=0.5,
                                     write_timeout=0.5, xonxoff=False, rtscts=False, dsrdtr=False,
                                     inter_byte_timeout=None, exclusive=None)
 
@@ -78,11 +78,16 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
-    device.switch_to_passive_mode()
+    positive = len(sys.argv) < 2
+    if positive:
+        device.switch_to_positive_mode()
+    else:
+        device.switch_to_passive_mode()
+
     while True:
         frame = device.get_frame()
         if frame:
             WZSK.print_frame(frame)
             if WZSK.is_valid_frame(frame):
                 print('CH2O: {}'.format(WZSK.calculate(*device.get_value_high_and_low(frame))))
-        time.sleep(10)
+        time.sleep(5)
