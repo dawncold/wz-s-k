@@ -4,6 +4,7 @@ import serial
 
 SERIAL_DEVICE = '/dev/ttyAMA0'
 HEAD_FIRST = 0xff
+COMMAND_PREFIX = 0x86
 BODY_LENGTH = 8
 
 
@@ -44,13 +45,18 @@ class WZSK:
         data.append(0x79)
         self.serial.write(bytes(data))
 
-        b = self.serial.read()
-        if b != chr(HEAD_FIRST):
-            return
-        frame = self.serial.read(BODY_LENGTH)
-        if len(frame) != BODY_LENGTH:
-            return
-        return frame
+        while True:
+            b = self.serial.read()
+            if b != chr(HEAD_FIRST):
+                continue
+            if b != chr(COMMAND_PREFIX):
+                continue
+            remaining_frame = self.serial.read(BODY_LENGTH - 1)
+            if len(remaining_frame) != BODY_LENGTH - 1:
+                continue
+            frame = bytearray(COMMAND_PREFIX)
+            frame.extend(remaining_frame)
+            return bytes(frame)
 
     def get_frame(self):
         while True:
