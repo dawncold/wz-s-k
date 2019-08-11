@@ -18,6 +18,40 @@ class WZSK:
                                     bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
                                     stopbits=serial.STOPBITS_ONE)
 
+    def switch_to_passive_mode(self):
+        data = bytearray()
+        data.append(0xff)
+        data.append(0x01)
+        data.append(0x78)
+        data.append(0x41)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x46)
+        self.serial.write(bytes(data))
+
+    def request(self):
+        data = bytearray()
+        data.append(0xff)
+        data.append(0x01)
+        data.append(0x86)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x00)
+        data.append(0x79)
+        self.serial.write(bytes(data))
+
+        b = self.serial.read()
+        if b != chr(HEAD_FIRST):
+            return
+        frame = self.serial.read(BODY_LENGTH)
+        if len(frame) != BODY_LENGTH:
+            return
+        return frame
+
     def get_frame(self):
         while True:
             b = self.serial.read()
@@ -38,8 +72,8 @@ class WZSK:
         print(' '.join('0x{:02x}'.format(ord(b)) for b in frame))
 
     @staticmethod
-    def calculate(frame):
-        return (ord(frame[3]) << 8) + ord(frame[4])
+    def calculate(high, low):
+        return (ord(high) << 8) + ord(low)
 
 
 if __name__ == '__main__':
@@ -47,4 +81,15 @@ if __name__ == '__main__':
     frame = device.get_frame()
     WZSK.print_frame(frame)
     if WZSK.is_valid_frame(frame):
-        print('CH2O: {}'.format(WZSK.calculate(frame)))
+        print('CH2O: {}'.format(WZSK.calculate(frame[3], frame[4])))
+
+    print('switch to passive mode')
+    device.switch_to_passive_mode()
+    response = device.request()
+    if response:
+        if WZSK.is_valid_frame(response):
+            print('CH2O: {}'.format(WZSK.calculate(response[5], response[6])))
+        else:
+            print('invalid response')
+    else:
+        print('no response')
