@@ -19,9 +19,9 @@ class WZSK:
         self.positive = True
 
     def setup_serial(self):
-        self.serial = serial.Serial(port=self.serial_device, baudrate=9600,
-                                    bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE,
-                                    stopbits=serial.STOPBITS_ONE, timeout=0.5, write_timeout=0.5)
+        self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.5,
+                                    write_timeout=0.5, xonxoff=False, rtscts=False, dsrdtr=False,
+                                    inter_byte_timeout=None, exclusive=None)
 
     def switch_to_positive_mode(self):
         print('switch to positive mode')
@@ -43,11 +43,17 @@ class WZSK:
 
         b = self.serial.read()
         if b is None or not b:
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         if b != chr(HEAD_FIRST):
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         body = self.serial.read(BODY_LENGTH)
         if len(body) != BODY_LENGTH:
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         return body
 
