@@ -72,11 +72,13 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
+    device.switch_to_passive_mode()
     while True:
         frame = device.get_frame()
         if frame is None:
             print('no response')
             continue
         WZSK.print_frame(frame)
-        print('CH2O: {}'.format(WZSK.calculate(*device.get_value_high_and_low(frame))))
+        if WZSK.is_valid_frame(frame):
+            print('CH2O: {}'.format(WZSK.calculate(*device.get_value_high_and_low(frame))))
         time.sleep(1)
