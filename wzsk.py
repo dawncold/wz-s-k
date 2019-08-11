@@ -33,9 +33,11 @@ class WZSK:
 
         b = self.serial.read()
         if b != chr(HEAD_FIRST):
+            print('invalid head first: {:02x}'.format(ord(b)))
             return None
         frame = self.serial.read(BODY_LENGTH)
         if len(frame) != BODY_LENGTH:
+            print('invalid frame length: {}'.format(len(frame)))
             return None
         return frame
 
