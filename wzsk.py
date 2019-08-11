@@ -47,7 +47,7 @@ class WZSK:
         data.append(0x79)
         self.serial.write(bytes(data))
 
-        if self.serial.in_waiting() == 9:
+        if self.serial.in_waiting == 9:
             b = self.serial.read()
             if b != chr(HEAD_FIRST):
                 return None
