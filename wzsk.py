@@ -43,17 +43,20 @@ class WZSK:
 
         b = self.serial.read()
         if b is None or not b:
-            self.serial.reset_input_buffer()
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         if b != chr(HEAD_FIRST):
             print('invalid head: 0x{:02x}'.format(ord(b)))
-            self.serial.reset_input_buffer()
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         body = self.serial.read(BODY_LENGTH)
         if len(body) != BODY_LENGTH:
             print('invalid body: ',)
             WZSK.print_frame(body)
-            self.serial.reset_input_buffer()
+            if not self.positive:
+                self.serial.reset_input_buffer()
             return None
         return body
 
@@ -78,7 +81,7 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
-    device.switch_to_passive_mode()
+    device.switch_to_positive_mode()
     while True:
         frame = device.get_frame()
         if frame is None:
