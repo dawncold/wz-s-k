@@ -89,14 +89,14 @@ if __name__ == '__main__':
     if WZSK.is_valid_frame(frame):
         print('CH2O: {}'.format(WZSK.calculate(frame[3], frame[4])))
 
-    print('switch to passive mode')
-    device.switch_to_passive_mode()
-    response = device.request()
-    if response:
-        WZSK.print_frame(response)
-        if WZSK.is_valid_frame(response):
-            print('CH2O: {}'.format(WZSK.calculate(response[5], response[6])))
-        else:
-            print('invalid response')
-    else:
-        print('no response')
+    # print('switch to passive mode')
+    # device.switch_to_passive_mode()
+    # response = device.request()
+    # if response:
+    #     WZSK.print_frame(response)
+    #     if WZSK.is_valid_frame(response):
+    #         print('CH2O: {}'.format(WZSK.calculate(response[5], response[6])))
+    #     else:
+    #         print('invalid response')
+    # else:
+    #     print('no response')
