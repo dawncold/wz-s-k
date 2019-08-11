@@ -30,14 +30,13 @@ class WZSK:
         self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
         time.sleep(.1)
 
-        if self.serial.in_waiting == 9:
-            b = self.serial.read()
-            if b != chr(HEAD_FIRST):
-                return None
-            frame = self.serial.read(BODY_LENGTH)
-            return frame
-        self.serial.reset_input_buffer()
-        return None
+        b = self.serial.read()
+        if b != chr(HEAD_FIRST):
+            return None
+        frame = self.serial.read(BODY_LENGTH)
+        if len(frame) != BODY_LENGTH:
+            return None
+        return frame
 
     def get_frame(self):
         while True:
