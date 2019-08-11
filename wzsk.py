@@ -42,7 +42,7 @@ class WZSK:
             time.sleep(.5)
 
         b = self.serial.read()
-        if b is None:
+        if b is None or not b:
             return None
         if b != chr(HEAD_FIRST):
             print('invalid head: 0x{:02x}'.format(ord(b)))
