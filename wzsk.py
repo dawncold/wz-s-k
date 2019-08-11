@@ -26,7 +26,6 @@ class WZSK:
         print('switch to positive mode')
         self.serial.write(b'\xFF\x01\x78\x40\x00\x00\x00\x00\x47')
         time.sleep(.5)
-        self.serial.reset_input_buffer()
 
     def switch_to_passive_mode(self):
         print('switch to passive mode')
