@@ -21,6 +21,7 @@ class WZSK:
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600, write_timeout=0.5)
 
     def switch_to_passive_mode(self):
+        print('switch to passive mode')
         self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
         time.sleep(1)
         self.serial.reset_input_buffer()
@@ -73,12 +74,6 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
-    frame = device.get_frame()
-    WZSK.print_frame(frame)
-    if WZSK.is_valid_frame(frame):
-        print('CH2O: {}'.format(WZSK.calculate(frame[3], frame[4])))
-
-    print('switch to passive mode')
     device.switch_to_passive_mode()
     while True:
         frame = device.get_frame()
