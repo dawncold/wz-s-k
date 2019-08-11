@@ -87,6 +87,7 @@ if __name__ == '__main__':
     device.switch_to_passive_mode()
     response = device.request()
     if response:
+        WZSK.print_frame(response)
         if WZSK.is_valid_frame(response):
             print('CH2O: {}'.format(WZSK.calculate(response[5], response[6])))
         else:
