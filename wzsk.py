@@ -23,21 +23,12 @@ class WZSK:
     def switch_to_passive_mode(self):
         print('switch to passive mode')
         self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
-        time.sleep(1)
+        time.sleep(.1)
         self.serial.reset_input_buffer()
 
     def request(self):
-        data = bytearray()
-        data.append(0xff)
-        data.append(0x01)
-        data.append(0x86)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x00)
-        data.append(0x79)
-        self.serial.write(bytes(data))
+        self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
+        time.sleep(.1)
 
         if self.serial.in_waiting == 9:
             b = self.serial.read()
@@ -77,6 +68,9 @@ if __name__ == '__main__':
     device.switch_to_passive_mode()
     while True:
         frame = device.request()
+        if frame is None:
+            print('no response')
+            continue
         WZSK.print_frame(frame)
         print('CH2O: {}'.format(WZSK.calculate(frame[5], frame[6])))
         time.sleep(1)
