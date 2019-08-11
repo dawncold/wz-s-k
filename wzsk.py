@@ -15,8 +15,7 @@ class WZSK:
         self.setup_serial()
 
     def setup_serial(self):
-        self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.2,
-                                    write_timeout=0.5)
+        self.serial = serial.Serial(port=self.serial_device, baudrate=9600, write_timeout=0.5)
 
     def switch_to_passive_mode(self):
         data = bytearray()
