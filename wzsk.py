@@ -16,6 +16,7 @@ class WZSK:
         self.serial_device = serial_device
         self.serial = None
         self.setup_serial()
+        self.positive = True
 
     def setup_serial(self):
         self.serial = serial.Serial(port=self.serial_device, baudrate=9600, timeout=0.5,
@@ -26,34 +27,32 @@ class WZSK:
         print('switch to positive mode')
         self.serial.write(b'\xFF\x01\x78\x40\x00\x00\x00\x00\x47')
         time.sleep(.5)
+        self.positive = True
 
     def switch_to_passive_mode(self):
         print('switch to passive mode')
         self.serial.write(b'\xFF\x01\x78\x41\x00\x00\x00\x00\x46')
         time.sleep(.5)
         self.serial.reset_input_buffer()
+        self.positive = False
 
-    def request(self):
-        self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
-        time.sleep(.5)
+    def get_frame(self):
+        if not self.positive:
+            self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
+            time.sleep(.5)
 
         b = self.serial.read()
         if b != chr(HEAD_FIRST):
             return None
-        frame = self.serial.read(BODY_LENGTH)
-        if len(frame) != BODY_LENGTH:
+        body = self.serial.read(BODY_LENGTH)
+        if len(body) != BODY_LENGTH:
             return None
-        return frame
+        return body
 
-    def get_frame(self):
-        while True:
-            b = self.serial.read()
-            if b != chr(HEAD_FIRST):
-                continue
-            body = self.serial.read(BODY_LENGTH)
-            if len(body) != BODY_LENGTH:
-                continue
-            return body
+    def get_value_high_and_low(self, frame):
+        if self.positive:
+            return frame[3], frame[4]
+        return frame[5], frame[6]
 
     @staticmethod
     def is_valid_frame(frame):
@@ -71,12 +70,12 @@ class WZSK:
 
 if __name__ == '__main__':
     device = WZSK()
-    device.switch_to_positive_mode()
+    device.switch_to_passive_mode()
     while True:
         frame = device.get_frame()
         if frame is None:
             print('no response')
             continue
         WZSK.print_frame(frame)
-        print('CH2O: {}'.format(WZSK.calculate(frame[3], frame[4])))
+        print('CH2O: {}'.format(WZSK.calculate(*device.get_value_high_and_low(frame))))
         time.sleep(1)
