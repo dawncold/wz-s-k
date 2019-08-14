@@ -90,7 +90,7 @@ if __name__ == '__main__':
                 if positive:
                     print('CH2O: {} ppb'.format(WZSK.calculate(*device.get_value_high_and_low(frame))))
                 else:
-                    print('Ch2O: {} mg/m3, {} ppb'.format(
+                    print('Ch2O: {} µg/m³, {} ppb'.format(
                         WZSK.calculate(frame[1], frame[2]),
                         WZSK.calculate(*device.get_value_high_and_low(frame))))
         time.sleep(5)
