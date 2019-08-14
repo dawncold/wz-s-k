@@ -12,14 +12,14 @@ BODY_LENGTH = 8
 
 
 class WZSK:
-    def __init__(self):
+    def __init__(self, port='/dev/ttyAMA0'):
+        self.port = port
         self.serial = None
         self.setup_serial()
         self.positive = True
 
     def setup_serial(self):
-        port = serial.tools.list_ports.comports()[0]
-        self.serial = serial.Serial(port=port.device, timeout=0.5, write_timeout=0.5)
+        self.serial = serial.Serial(port=self.port, timeout=0.5, write_timeout=0.5)
 
     def switch_to_positive_mode(self):
         print('switch to positive mode')
@@ -75,7 +75,7 @@ class WZSK:
 
 
 if __name__ == '__main__':
-    device = WZSK()
+    device = WZSK(port='/dev/serial0')
     positive = len(sys.argv) < 2
     if positive:
         device.switch_to_positive_mode()
