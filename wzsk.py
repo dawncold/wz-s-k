@@ -35,6 +35,7 @@ class WZSK:
         self.positive = False
 
     def get_frame(self):
+        print('getting frame...')
         if not self.positive:
             self.serial.write(b'\xFF\x01\x86\x00\x00\x00\x00\x00\x79')
             time.sleep(.5)
