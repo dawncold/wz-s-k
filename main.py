@@ -26,7 +26,7 @@ def dismiss():
         process.join()
         process = None
 
-        Process(target=welcome_main).start().join()
+        Process(target=welcome_main).start()
 
 
 btn_a = Button(BTN_A_GPIO)
@@ -35,7 +35,7 @@ btn_a.when_activated = show_result
 btn_b = Button(BTN_B_GPIO)
 btn_b.when_activated = dismiss
 
-Process(target=welcome_main).start().join()
+Process(target=welcome_main).start()
 
 while True:
     time.sleep(.1)
