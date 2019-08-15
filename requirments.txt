@@ -1,3 +1,5 @@
 pyserial
 rpi.gpio
 gpiozero
+spidev
+smbus
