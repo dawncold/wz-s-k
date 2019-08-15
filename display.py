@@ -30,9 +30,41 @@ epaper.setExFonts(ft) # init with fonts file
 epaper.setTextFormat(1, epaper.BLACK, epaper.WHITE, 2, 2)
 epaper.setExFontsFmt(24, 24) # set extension fonts width and height
 
+epaper.setTextCursor(0, 10)
+epaper.printStrLn('Welcome')
+epaper.printStrLn('Press A to start')
+epaper.printStrLn('Press B to terminate')
+epaper.flush(epaper.PART)
+
 
 def main():
     device = WZSK(port='/dev/serial0')
+
+    epaper.clear(epaper.WHITE)
+    epaper.flush(epaper.PART)
+    epaper.setTextCursor(0, 10)
+    epaper.printStrLn('Warming up...')
+    epaper.flush(epaper.PART)
+
+    success_results = []
+    while True:
+        device.switch_to_positive_mode()
+        try:
+            frame = device.get_frame()
+        except:
+            success_results = []
+        else:
+            if WZSK.is_valid_frame(frame):
+                success_results.append(frame)
+        if len(success_results) >= 5:
+            break
+
+    epaper.clear(epaper.WHITE)
+    epaper.flush(epaper.PART)
+    epaper.setTextCursor(0, 10)
+    epaper.printStrLn('Reading...')
+    epaper.flush(epaper.PART)
+
     device.switch_to_passive_mode()
 
     while True:
