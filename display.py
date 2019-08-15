@@ -29,10 +29,12 @@ epaper.setExFonts(ft) # init with fonts file
 epaper.setTextFormat(1, epaper.BLACK, epaper.WHITE, 2, 2)
 epaper.setExFontsFmt(24, 24) # set extension fonts width and height
 
-while True:
-    epaper.clear(epaper.WHITE)
-    epaper.flush(epaper.PART)
-    epaper.setTextCursor(0, 10)
-    epaper.printStrLn("中国  北京")
-    epaper.flush(epaper.PART)
-    time.sleep(1)
+
+def main():
+    while True:
+        epaper.clear(epaper.WHITE)
+        epaper.flush(epaper.PART)
+        epaper.setTextCursor(0, 10)
+        epaper.printStrLn("中国  北京")
+        epaper.flush(epaper.PART)
+        time.sleep(1)
