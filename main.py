@@ -12,14 +12,15 @@ process = None
 def show_result():
     global process
     if process is None:
+        print('start process')
         process = Process(target=main)
         process.start()
-        process.join()
 
 
 def dismiss():
     global process
     if process:
+        print('terminate process')
         process.terminate()
         process = None
 
