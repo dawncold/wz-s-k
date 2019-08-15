@@ -54,7 +54,7 @@ def main():
         except:
             success_results = []
         else:
-            if WZSK.is_valid_frame(frame):
+            if frame and WZSK.is_valid_frame(frame):
                 success_results.append(frame)
         if len(success_results) >= 5:
             break
