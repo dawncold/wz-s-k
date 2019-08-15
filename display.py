@@ -48,13 +48,16 @@ def main():
 
         if frame:
             if WZSK.is_valid_frame(frame):
-                content = 'Ch2O: {} µg/m³, {} ppb'.format(
+                content = '{} µg/m³, {} ppb'.format(
                     WZSK.calculate(frame[1], frame[2]),
                     WZSK.calculate(*device.get_value_high_and_low(frame)))
+
+                print(content)
 
                 epaper.clear(epaper.WHITE)
                 epaper.flush(epaper.PART)
                 epaper.setTextCursor(0, 10)
+                epaper.printStrLn('Ch2O:')
                 epaper.printStrLn(content)
                 epaper.flush(epaper.PART)
 
