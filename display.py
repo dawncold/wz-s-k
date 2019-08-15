@@ -1,10 +1,11 @@
 # -*- coding:utf-8 -*-
 
-from epaper.dfrobot_epaper import DFRobot_Epaper_SPI
 import time
+import os
+from epaper.dfrobot_epaper import DFRobot_Epaper_SPI
 from epaper.display_extension.freetype_helper import Freetype_Helper
 
-fontFilePath = ".epaper/display_extension/wqydkzh.ttf" # fonts file
+fontFilePath = "{}/epaper/display_extension/wqydkzh.ttf".format(os.path.dirname(os.path.abspath(__file__)))
 
 # peripheral params
 RASPBERRY_SPI_BUS = 0
