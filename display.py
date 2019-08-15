@@ -33,7 +33,7 @@ epaper.setExFontsFmt(24, 24) # set extension fonts width and height
 epaper.setTextCursor(0, 10)
 epaper.printStrLn('Welcome')
 epaper.printStrLn('Press A to start')
-epaper.printStrLn('Press B to terminate')
+epaper.printStrLn('Press B to stop')
 epaper.flush(epaper.PART)
 
 
