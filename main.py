@@ -22,6 +22,7 @@ def dismiss():
     if process:
         print('terminate process')
         process.terminate()
+        process.join()
         process = None
 
 
