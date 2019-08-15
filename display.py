@@ -4,6 +4,7 @@ import time
 import os
 from epaper.dfrobot_epaper import DFRobot_Epaper_SPI
 from epaper.display_extension.freetype_helper import Freetype_Helper
+from wzsk import WZSK
 
 fontFilePath = "{}/epaper/display_extension/wqydkzh.ttf".format(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,10 +32,30 @@ epaper.setExFontsFmt(24, 24) # set extension fonts width and height
 
 
 def main():
+    device = WZSK(port='/dev/serial0')
+    device.switch_to_passive_mode()
+
     while True:
-        epaper.clear(epaper.WHITE)
-        epaper.flush(epaper.PART)
-        epaper.setTextCursor(0, 10)
-        epaper.printStrLn("中国  北京")
-        epaper.flush(epaper.PART)
-        time.sleep(1)
+        try:
+            frame = device.get_frame()
+        except:
+            epaper.clear(epaper.WHITE)
+            epaper.flush(epaper.PART)
+            epaper.setTextCursor(0, 10)
+            epaper.printStrLn('Get frame error, retry...')
+            epaper.flush(epaper.PART)
+            continue
+
+        if frame:
+            if WZSK.is_valid_frame(frame):
+                content = 'Ch2O: {} µg/m³, {} ppb'.format(
+                    WZSK.calculate(frame[1], frame[2]),
+                    WZSK.calculate(*device.get_value_high_and_low(frame)))
+
+                epaper.clear(epaper.WHITE)
+                epaper.flush(epaper.PART)
+                epaper.setTextCursor(0, 10)
+                epaper.printStrLn(content)
+                epaper.flush(epaper.PART)
+
+        time.sleep(5)
