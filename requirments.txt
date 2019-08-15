@@ -3,3 +3,4 @@ rpi.gpio
 gpiozero
 spidev
 smbus
+freetype-py
