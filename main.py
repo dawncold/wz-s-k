@@ -1,7 +1,6 @@
 import os
 import time
 from multiprocessing import Process
-import daemon
 from gpiozero import Button
 from display import main as display_main
 from epaper.dfrobot_epaper import DFRobot_Epaper_SPI
@@ -69,17 +68,16 @@ def initEpaper():
     return epaper
 
 
-with daemon.DaemonContext():
-    btn_a = Button(BTN_A_GPIO)
-    btn_a.when_activated = show_result
+btn_a = Button(BTN_A_GPIO)
+btn_a.when_activated = show_result
 
-    btn_b = Button(BTN_B_GPIO)
-    btn_b.when_activated = dismiss
+btn_b = Button(BTN_B_GPIO)
+btn_b.when_activated = dismiss
 
-    epaper = initEpaper()
+epaper = initEpaper()
 
-    welcome(epaper)
+welcome(epaper)
 
 
-    while True:
-        time.sleep(.1)
+while True:
+    time.sleep(.1)

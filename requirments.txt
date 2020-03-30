@@ -4,4 +4,3 @@ gpiozero
 spidev
 smbus
 freetype-py
-python-daemon
