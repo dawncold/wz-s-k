@@ -1,10 +1,6 @@
 # -*- coding:utf-8 -*-
 
-import pigpio
-import time,sys,datetime
-
-pi = pigpio.pi()
-h = pi.i2c_open(1, 0x5a)
+import time
 
 """
 return None
@@ -31,28 +27,24 @@ return {
 }
 """
 
-def read():
-    try:
-        c, d = pi.i2c_read_device(h, 9)
-        length=len(d)
-        if length != 9:
-            return None
-        status = read_status(d[2])
-        ret_obj = dict(status=status, values=[])
-        prediction = d[0] * pow(2, 8) + d[1]
-        if d[2] == 0x01:
-            prediction=d[0]*pow(2,8)+d[1]
-        ret_obj['values'].append(dict(name='eCO2', unit='ppm', value=prediction))
-        if status == 'OK':
-            resistance = d[4]*pow(2,16)+d[5]*pow(2,8)+d[6]
-            ret_obj['values'].append(dict(name='resistance', unit='Ohm', value=resistance))
-            eTVOC= d[7]*pow(2,8)+d[8]
-            ret_obj['values'].append(dict(name='eTVOC', unit='ppb', value=eTVOC))
-        
-        return ret_obj
-    finally:
-        pi.i2c_close(h)
-        pi.stop()
+def read(gpio, i2c_handle):
+    c, d = gpio.i2c_read_device(i2c_handle, 9)
+    length=len(d)
+    if length != 9:
+        return None
+    status = read_status(d[2])
+    ret_obj = dict(status=status, values=[])
+    prediction = d[0] * pow(2, 8) + d[1]
+    if d[2] == 0x01:
+        prediction=d[0]*pow(2,8)+d[1]
+    ret_obj['values'].append(dict(name='eCO2', unit='ppm', value=prediction))
+    if status == 'OK':
+        resistance = d[4]*pow(2,16)+d[5]*pow(2,8)+d[6]
+        ret_obj['values'].append(dict(name='resistance', unit='Ohm', value=resistance))
+        eTVOC= d[7]*pow(2,8)+d[8]
+        ret_obj['values'].append(dict(name='eTVOC', unit='ppb', value=eTVOC))
+    
+    return ret_obj
 
 def read_status(val):
     if val == 0:
@@ -65,4 +57,10 @@ def read_status(val):
         return 'BUSY'
 
 if __name__ == '__main__':
-    print(read())
+    import pigpio
+    
+    pi = pigpio.pi()
+    h = pi.i2c_open(1, 0x5a)
+    print(read(pi, h))
+    pi.i2c_close(h)
+    pi.stop()

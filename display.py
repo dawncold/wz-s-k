@@ -1,11 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import time
+import pigpio
 from wzsk import WZSK
 from ams import read as ams_read
 
 
 def main(epaper):
+    pi = pigpio.pi()
+    h = pi.i2c_open(1, 0x5a)
+    
     device = WZSK(port='/dev/serial0')
 
     epaper.clear(epaper.WHITE)
@@ -50,7 +54,7 @@ def main(epaper):
                 content2 = 'CH2O: -- ppb'
         
         try:
-            ams_result = ams_read()
+            ams_result = ams_read(pi, h)
         except:
             content3 = 'eCO2: -- ppm'
             content4 = 'eTVOC: -- ppb'
