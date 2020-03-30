@@ -47,8 +47,8 @@ def main(epaper):
 
         if frame:
             if WZSK.is_valid_frame(frame):
-                content1 = '{} µg/m³'.format(WZSK.calculate(frame[1], frame[2]))
-                content2 = '{} ppb'.format(WZSK.calculate(*device.get_value_high_and_low(frame)))
+                content1 = 'CH2O: {} µg/m³'.format(WZSK.calculate(frame[1], frame[2]))
+                content2 = 'CH2O: {} ppb'.format(WZSK.calculate(*device.get_value_high_and_low(frame)))
 
                 print(content1)
                 print(content2)
@@ -56,7 +56,6 @@ def main(epaper):
                 epaper.clear(epaper.WHITE)
                 epaper.flush(epaper.PART)
                 epaper.setTextCursor(0, 10)
-                epaper.printStrLn('Ch2O:')
                 epaper.printStrLn(content1)
                 epaper.printStrLn(content2)
                 epaper.flush(epaper.PART)
