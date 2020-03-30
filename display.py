@@ -60,7 +60,7 @@ def main(epaper):
                 eco2_result = name2value.get('eCO2')
                 content3 = 'eCO2: {} ppm'.format(eco2_result['value'] if eco2_result else '--')
                 etvoc_result = name2value.get('eTVOC')
-                content3 = 'eTVOC: {} ppb'.format(etvoc_result['value'] if etvoc_result else '--')
+                content4 = 'eTVOC: {} ppb'.format(etvoc_result['value'] if etvoc_result else '--')
             else:
                 content3 = 'eCO2: -- ppm'
                 content4 = 'eTVOC: -- ppb'
